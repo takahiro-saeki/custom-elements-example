@@ -1,7 +1,6 @@
 class Button extends HTMLElement {
   constructor() {
     super()
-    console.log(this)
   }
   static get observedAttributes() {return ['name']; }
 
@@ -10,9 +9,9 @@ class Button extends HTMLElement {
       this.style.background = newValue;
       this.style.padding = '.5rem';
       this.style.borderRadius = '.5rem';
+      this.style.color = '#FFF';
     }
-    console.log(this)
   }
 }
 
-customElements.define("material-btn", Button);
+export default Button;

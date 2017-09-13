@@ -15,4 +15,4 @@ class HelloElement extends HTMLElement {
   }
 }
 
-customElements.define('hello-element', HelloElement);
+export default HelloElement;

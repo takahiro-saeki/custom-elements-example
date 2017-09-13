@@ -1,9 +1,21 @@
 {
   "presets": [
-    ["env", {"modules": false}]
+    ["es2015", {
+      "modules": false
+    }],
+    "latest"
   ],
   "plugins": [
-    [
+    "transform-custom-element-classes",
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }],
+    "transform-decorators-legacy",
+    "transform-async-to-generator",
+    "transform-function-bind",
+    "transform-class-properties",
+    "transform-es2015-modules-commonjs", [
       "module-resolver", {
         "root": ["./src/js"]
       }

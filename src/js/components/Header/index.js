@@ -8,4 +8,4 @@ class Header extends HTMLElement {
   }
 }
 
-customElements.define('custom-div', Header);
+export default Header;
