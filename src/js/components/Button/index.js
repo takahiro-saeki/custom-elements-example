@@ -2,7 +2,7 @@ class Button extends HTMLElement {
   constructor() {
     super()
   }
-  static get observedAttributes() {return ['name']; }
+  static get observedAttributes() {return ['name', 'title']; }
 
   attributeChangedCallback(attr, oldValue, newValue) {
     if (attr == 'name') {
