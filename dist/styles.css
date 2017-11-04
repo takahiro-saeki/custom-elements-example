@@ -1,8 +1,13 @@
+@charset "Shift_JIS";
 body {
   margin: 0;
 }
 
 material-btn {
+  width: 100%;
+}
+
+title-bar {
   width: 100%;
 }
 

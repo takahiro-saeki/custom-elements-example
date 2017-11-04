@@ -25,3 +25,6 @@
 
 また以下の4つの仕様をベースに構成されています。
 - Custom Elements
+- Shadow DOM
+- template
+- HTML Imports
