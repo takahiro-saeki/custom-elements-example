@@ -28,3 +28,23 @@
 - Shadow DOM
 - template
 - HTML Imports
+
+簡単に上記の説明をすると
+### Custom Elements
+新しいHTMLタグを作成したり、既存のHTMLタグを拡張し、より使い易くしたりする仕様です。
+
+### Shadow DOM
+HTMLタグやstyleをカプセル化し、隠蔽する仕様です。
+
+### template
+HTMLのマークをアップを予めtemplateタグ内に記述することによってページの読み込みの際には使用されないが、template内のDOMをレンダリングする処理を実行する際に読み込まれる仕様です。
+
+### HTML Imports
+HTMLを他のHTMLへ読み込ませれるようにする仕様です。
+
+上記のうち、今回はCustom Elementsを中心に説明して行きたいと思います。
+
+## Custom Elementsの使い方
+まずはCustom Elementsを使用してみましょう。
+また今回のExample Codeは下記GitHubにあります。
+https://github.com/takahiro-saeki/custom-elements-example
