@@ -5,10 +5,19 @@ export default class CustomBtn extends HTMLElement {
     return ['color', 'width', 'height'];
   }
 
+  constructor() {
+    super()
+  }
+
   attributeChangedCallback(attr, oldValue, newValue) {
     console.log({attr, oldValue, newValue})
     if (attr === 'color') {
       this.attachShadow({mode: 'open'}).innerHTML = btnTemplate(newValue)
     }
   }
+/*
+  connectedCallback() {
+    this.attachShadow({mode: 'open'}).innerHTML = btnTemplate()
+  }
+  */
 }
