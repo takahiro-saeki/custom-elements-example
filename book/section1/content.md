@@ -48,3 +48,5 @@ HTMLを他のHTMLへ読み込ませれるようにする仕様です。
 まずはCustom Elementsを使用してみましょう。
 また今回のExample Codeは下記GitHubにあります。
 https://github.com/takahiro-saeki/custom-elements-example
+
+### custom-btnを作ってみよう

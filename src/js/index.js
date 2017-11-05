@@ -1,2 +1,6 @@
-
+import CustomBtn from './section1/CustomBtn';
+import Container from './section1/Container';
 import './style';
+
+customElements.define('custom-btn', CustomBtn);
+customElements.define('custom-container', Container);
