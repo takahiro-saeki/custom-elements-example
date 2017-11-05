@@ -32,8 +32,13 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Hot Module Replacement',
+      title: 'Custom Elements Example 1',
       template: path.join(__dirname, './src/index.ejs')
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Custom Elements Example 2',
+      template: path.join(__dirname, './src/slider.ejs'),
+      filename: 'slider.html'
     }),
     new ExtractTextPlugin("styles.css"),
     new webpack.HotModuleReplacementPlugin()

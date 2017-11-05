@@ -25,12 +25,7 @@ export default class Drawer extends HTMLElement {
     this.init()
 
   }
-  
-  init() {
-    //something optimization.
-    this.param = something
-  }
-  
+
   static render(param) {
     return`
       <style>
@@ -52,7 +47,7 @@ export default class Drawer extends HTMLElement {
       </div>
     `
   }
-  
+
   connectedCallback() {
     const check = async () => {
       try {
@@ -62,6 +57,7 @@ export default class Drawer extends HTMLElement {
           mode: 'open'
         }).innerHTML = Drawer.render(this.param)
       } catch (err) {
+        console.log('error check')
         return err
       }
     }

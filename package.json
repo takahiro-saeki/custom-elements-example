@@ -5,10 +5,9 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --inline --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "build": "npm run clean && cross-env NODE_ENV=production webpack --progress",
     "tree": "tree -I node_modules",
-    "updates": "npm-check-updates -u -a",
-    "updates-ls": "npm-check-updates"
+    "clean": "rimraf 'dist/*.{js,json,svg,png,css,woff,woff2,ttf,eot,html}'"
   },
   "repository": {
     "type": "git",
