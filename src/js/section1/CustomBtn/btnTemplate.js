@@ -1,4 +1,4 @@
-const btnTemplate = (color = '#222') => `
+const btnTemplate = ({color = '#222', width, height}) => `
 <style>
   .base {
     padding: .5rem;
@@ -9,6 +9,8 @@ const btnTemplate = (color = '#222') => `
     color: #FFF;
     border-radius: .5rem;
     outline: none;
+    width: ${width ? `${width}px` : 'auto'};
+    height: ${height ? `${height}px` : 'auto'};
   }
 
   .base:hover {

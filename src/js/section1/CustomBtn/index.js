@@ -7,17 +7,25 @@ export default class CustomBtn extends HTMLElement {
 
   constructor() {
     super()
+    this.attachShadow({
+      mode: 'open'
+    });
+    const color = this.getAttribute('color')
+    const width = this.getAttribute('width')
+    const height = this.getAttribute('height')
+    this.shadowRoot.innerHTML = btnTemplate({color, width, height})
+    this.addEventListener('click', () => {
+      //this.setAttribute('color', 'red')
+    })
   }
 
   attributeChangedCallback(attr, oldValue, newValue) {
-    console.log({attr, oldValue, newValue})
-    if (attr === 'color') {
-      this.attachShadow({mode: 'open'}).innerHTML = btnTemplate(newValue)
+    if(oldValue) {
+      this.parentNode.removeChild(this)
+      const color = this.getAttribute('color')
+      const width = this.getAttribute('width')
+      const height = this.getAttribute('height')
+      this.textContent = 'changed'
     }
   }
-/*
-  connectedCallback() {
-    this.attachShadow({mode: 'open'}).innerHTML = btnTemplate()
-  }
-  */
 }

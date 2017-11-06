@@ -50,3 +50,4 @@ HTMLを他のHTMLへ読み込ませれるようにする仕様です。
 https://github.com/takahiro-saeki/custom-elements-example
 
 ### custom-btnを作ってみよう
+まず簡単なボタンコンポーネントを作ってみましょう。
