@@ -40,8 +40,13 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       title: 'Custom Elements Example 2',
-      template: path.join(__dirname, './src/slider.ejs'),
-      filename: 'slider.html'
+      template: path.join(__dirname, './src/tab.ejs'),
+      filename: 'tab.html'
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Custom Elements Example 3',
+      template: path.join(__dirname, './src/card.ejs'),
+      filename: 'card.html'
     }),
     new ExtractTextPlugin("styles.css"),
     new webpack.HotModuleReplacementPlugin()
