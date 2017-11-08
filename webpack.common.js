@@ -48,6 +48,11 @@ module.exports = {
       template: path.join(__dirname, './src/card.ejs'),
       filename: 'card.html'
     }),
+    new HtmlWebpackPlugin({
+      title: 'Custom Elements Example 4',
+      template: path.join(__dirname, './src/counter.ejs'),
+      filename: 'counter.html'
+    })
     new ExtractTextPlugin("styles.css"),
     new webpack.HotModuleReplacementPlugin()
   ]
