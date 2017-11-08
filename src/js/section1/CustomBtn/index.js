@@ -24,7 +24,6 @@ export default class CustomBtn extends HTMLElement {
       const color = this.getAttribute('color')
       const width = this.getAttribute('width')
       const height = this.getAttribute('height')
-      console.log({color, width, height})
       this.shadowRoot.innerHTML = btnTemplate({color, width, height})
       this.textContent = 'changed!'
     }
