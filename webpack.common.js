@@ -52,7 +52,7 @@ module.exports = {
       title: 'Custom Elements Example 4',
       template: path.join(__dirname, './src/counter.ejs'),
       filename: 'counter.html'
-    })
+    }),
     new ExtractTextPlugin("styles.css"),
     new webpack.HotModuleReplacementPlugin()
   ]
