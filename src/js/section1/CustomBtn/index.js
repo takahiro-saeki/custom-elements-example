@@ -14,17 +14,11 @@ export default class CustomBtn extends HTMLElement {
     const width = this.getAttribute('width')
     const height = this.getAttribute('height')
     this.shadowRoot.innerHTML = btnTemplate({color, width, height})
-    this.addEventListener('click', () => {
-      //this.setAttribute('color', 'red')
-    })
   }
 
   attributeChangedCallback(attr, oldValue, newValue) {
     if(oldValue) {
-      this.parentNode.removeChild(this)
-      const color = this.getAttribute('color')
-      const width = this.getAttribute('width')
-      const height = this.getAttribute('height')
+      this.shadowRoot.querySelector('.base').textContent
       this.textContent = 'changed'
     }
   }
