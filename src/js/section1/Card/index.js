@@ -13,13 +13,12 @@ export default class Card extends HTMLElement {
     this.rightBtn = this.shadowRoot.querySelector('[right]');
     this.description = this.shadowRoot.querySelector('[description]');
     this.date = this.shadowRoot.querySelector('[date]');
-    console.log(this)
   }
-  
+
   connectedCallback() {
     this.leftBtn.innerText = this.getAttribute('left') || 'Link';
     this.rightBtn.innerText = this.getAttribute('right') || 'Share';
     this.description.innerText = this.getAttribute('description') || 'cute cat';
-    this.date.innerText = currentDate()
+    this.date.innerText = currentDate();
   }
 }

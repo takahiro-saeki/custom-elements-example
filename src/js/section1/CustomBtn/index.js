@@ -19,7 +19,7 @@ export default class CustomBtn extends HTMLElement {
     });
   }
 
-  attributeChangedCallback(attr, oldValue, newValue) {
+  attributeChangedCallback(attr, oldValue) {
     if (oldValue) {
       const color = this.getAttribute('color');
       const width = this.getAttribute('width');

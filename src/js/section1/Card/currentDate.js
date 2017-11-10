@@ -11,14 +11,14 @@ const month = {
   9: 'October',
   10: 'November',
   11: 'December'
-}
+};
 
 const currentDate = () => {
   const date = new Date();
-  const currentMonth = month[date.getMonth()]
-  const currentDate = date.getDate()
-  const today = `${currentMonth} ${currentDate}`
+  const currentMonth = month[date.getMonth()];
+  const currentDate = date.getDate();
+  const today = `${currentMonth} ${currentDate}`;
   return today;
-}
+};
 
 export default currentDate;

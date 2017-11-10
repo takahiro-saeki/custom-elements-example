@@ -51,7 +51,7 @@ export default class Counter extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback() {
     this.total.innerText = this.value;
   }
 
