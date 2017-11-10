@@ -33,10 +33,12 @@ template.innerHTML = `
   </style>
   <div class="contents-container">
     <ul class="tab-menu-container" menu>
-      <slot name="title"></slot>
+      <slot id="tabsSlot" name="title"></slot>
     </ul>
     <div>contents</div>
-    <slot></slot>
+    <div id="tabsContent">
+      <slot id="content" name="content"></slot>
+    </div>
   </div>
 `;
 
@@ -47,5 +49,22 @@ export default class Tab extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.menu = this.shadowRoot.querySelector('[menu]')
     this.tabsSlot = this.shadowRoot.querySelector('#tabsSlot');
+    this.tabsContent = this.shadowRoot.querySelector('#tabsContent');
+    this.tabs = this.tabsSlot.assignedNodes({flatten: true});
+    this.content = this.tabsContent.assignedNodes({flatten: true});
+    console.log(this.tabs)
+    console.log(this.content)
+    for (let index in this.tabs) {
+      this.tabs[index].setAttribute('id', index)
+      if (this.tabs[index].hasAttribute('selected')) {
+        this.tabs[index].setAttribute('selected', true)
+      } else {
+        this.tabs[index].setAttribute('selected', false)
+      }
+    }
+    
+    for (let index in this.content) {
+      this.content[index].setAttribute('id', index)
+    }
   }
 }
