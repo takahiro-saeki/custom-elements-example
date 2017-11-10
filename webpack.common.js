@@ -53,6 +53,11 @@ module.exports = {
       template: path.join(__dirname, './src/counter.ejs'),
       filename: 'counter.html'
     }),
+    new HtmlWebpackPlugin({
+      title: 'Custom Elements Example 5',
+      template: path.join(__dirname, './src/simpleTodo.ejs'),
+      filename: 'simpleTodo.html'
+    }),
     new ExtractTextPlugin("styles.css"),
     new webpack.HotModuleReplacementPlugin()
   ]
