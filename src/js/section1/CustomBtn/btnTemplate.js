@@ -1,4 +1,4 @@
-const btnTemplate = ({color = '#222', width, height}) => `
+const btnTemplate = ({ color = '#222', width, height }) => `
 <style>
   .base {
     padding: .5rem;
@@ -20,6 +20,6 @@ const btnTemplate = ({color = '#222', width, height}) => `
   <button class="base">
     <slot></slot>
   </button>
-`
+`;
 
-export default btnTemplate
+export default btnTemplate;

@@ -25,23 +25,23 @@ template.innerHTML = `
     <button type="button" decrement>-</button>
     <button type="button" reset>reset btn</button> 
   </div>
-`
+`;
 
 export default class Counter extends HTMLElement {
   static get observedAttributes() {
     return ['value'];
   }
-  
+
   constructor() {
-    super()
-    this.attachShadow({mode: 'open'}) 
+    super();
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.incBtn = this.shadowRoot.querySelector('[increment]');
     this.decBtn = this.shadowRoot.querySelector('[decrement]');
     this.resetBtn = this.shadowRoot.querySelector('[reset]');
     this.total = this.shadowRoot.querySelector('span');
   }
-  
+
   connectedCallback() {
     this.incBtn.addEventListener('click', this.increment);
     this.decBtn.addEventListener('click', this.decrement);
@@ -51,35 +51,29 @@ export default class Counter extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback() {
     this.total.innerText = this.value;
   }
-  
+
   increment = () => {
     const newValue = Number(this.value) + 1;
     this.value = newValue;
-  }
+  };
 
   decrement = () => {
     const newValue = Number(this.value) - 1;
     this.value = newValue;
-  }
-  
+  };
+
   resetTransaction = () => {
     this.value = 0;
-  }
-  
+  };
+
   get value() {
     return this.getAttribute('value');
   }
-  
+
   set value(newValue) {
     this.setAttribute('value', newValue);
-  }
-
-  disconnectedCallback() {
-    this.incBtn.removeEventListener('click', this.increment);
-    this.decBtn.removeEventListener('click', this.decrement);
-    this.resetBtn.removeEventListener('click', this.resetTransaction);
   }
 }
