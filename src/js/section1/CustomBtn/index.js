@@ -6,20 +6,26 @@ export default class CustomBtn extends HTMLElement {
   }
 
   constructor() {
-    super()
+    super();
     this.attachShadow({
       mode: 'open'
     });
-    const color = this.getAttribute('color')
-    const width = this.getAttribute('width')
-    const height = this.getAttribute('height')
-    this.shadowRoot.innerHTML = btnTemplate({color, width, height})
+    const color = this.getAttribute('color');
+    const width = this.getAttribute('width');
+    const height = this.getAttribute('height');
+    this.shadowRoot.innerHTML = btnTemplate({ color, width, height });
+    this.addEventListener('click', () => {
+      this.setAttribute('color', 'red');
+    });
   }
 
-  attributeChangedCallback(attr, oldValue, newValue) {
-    if(oldValue) {
-      this.shadowRoot.querySelector('.base').textContent
-      this.textContent = 'changed'
+  attributeChangedCallback(attr, oldValue) {
+    if (oldValue) {
+      const color = this.getAttribute('color');
+      const width = this.getAttribute('width');
+      const height = this.getAttribute('height');
+      this.shadowRoot.innerHTML = btnTemplate({ color, width, height });
+      this.textContent = 'changed!';
     }
   }
 }

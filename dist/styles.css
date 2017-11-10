@@ -1,14 +1,2 @@
-@charset "Shift_JIS";
-body {
-  margin: 0;
-}
-
-material-btn {
-  width: 100%;
-}
-
-title-bar {
-  width: 100%;
-}
-
-/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzdHlsZXMuY3NzIiwic291cmNlUm9vdCI6IiJ9*/
+:root{//--custom-color:red}body{margin:0}material-btn,title-bar{width:100%}
+/*# sourceMappingURL=styles.css.map*/

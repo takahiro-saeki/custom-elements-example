@@ -1,4 +1,8 @@
-@charset "Shift_JIS";
+
+:root {
+  //--custom-color: red;
+}
+
 body {
   margin: 0;
 }
