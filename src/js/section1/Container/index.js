@@ -1,10 +1,10 @@
 export default class Container extends HTMLElement {
   constructor() {
-    super()
+    super();
   }
 
   connectedCallback() {
-    this.attachShadow({mode: 'open'}).innerHTML = `
+    this.attachShadow({ mode: 'open' }).innerHTML = `
       <style>
         .container {
           box-sizing: border-box;
@@ -16,6 +16,6 @@ export default class Container extends HTMLElement {
       <div class="container">
         <slot></slot>
       </div>
-    `
+    `;
   }
 }

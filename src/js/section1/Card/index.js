@@ -32,12 +32,12 @@ template.innerHTML = `
       <div>説明文</div>
     </div>
   </div>
-`
+`;
 
 export default class Card extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({mode: 'open'}) 
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

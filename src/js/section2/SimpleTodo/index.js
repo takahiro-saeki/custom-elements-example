@@ -1,3 +1,1 @@
-export default class SimpleTodo extends HTMLElement {
-  
-}
+export default class SimpleTodo extends HTMLElement {}

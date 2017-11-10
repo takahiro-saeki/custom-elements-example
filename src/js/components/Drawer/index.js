@@ -2,7 +2,7 @@ import api from '../../logic/api';
 import { escapeRegExp } from 'lodash';
 
 const imageRender = img => {
-  return`
+  return `
     <style>
       .container-item {
         width: 33.33333%;
@@ -15,19 +15,18 @@ const imageRender = img => {
     <div class="container-item">
       <img src="${img.image_url}" class="responsive-img"/>
     </div>
-  `
-}
+  `;
+};
 
 export default class Drawer extends HTMLElement {
   constructor() {
-    super()
-    this.param
-    this.init()
-
+    super();
+    this.param;
+    this.init();
   }
 
   static render(param) {
-    return`
+    return `
       <style>
         .container {
           display: flex;
@@ -45,22 +44,22 @@ export default class Drawer extends HTMLElement {
       <div class="container">
         ${param.map(item => imageRender(item))}
       </div>
-    `
+    `;
   }
 
   connectedCallback() {
     const check = async () => {
       try {
-        const requestParam = await api()
-        const optimize = requestParam.info.photo
+        const requestParam = await api();
+        const optimize = requestParam.info.photo;
         this.attachShadow({
           mode: 'open'
-        }).innerHTML = Drawer.render(this.param)
+        }).innerHTML = Drawer.render(this.param);
       } catch (err) {
-        console.log('error check')
-        return err
+        console.log('error check');
+        return err;
       }
-    }
-    check()
+    };
+    check();
   }
 }

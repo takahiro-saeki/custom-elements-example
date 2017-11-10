@@ -1,5 +1,7 @@
 class Title extends HTMLElement {
-  static get observedAttributes() {return ['title']; }
+  static get observedAttributes() {
+    return ['title'];
+  }
 
   attributeChangedCallback(name, oldValue, newValue, nameSpace) {
     console.log('total param', {
@@ -7,9 +9,9 @@ class Title extends HTMLElement {
       oldValue,
       newValue,
       nameSpace
-    })
-    if(name === 'title') {
-      this.textContent = newValue
+    });
+    if (name === 'title') {
+      this.textContent = newValue;
     }
   }
 }

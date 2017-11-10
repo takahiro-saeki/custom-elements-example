@@ -1,9 +1,11 @@
 class Button extends HTMLElement {
   constructor() {
-    super()
-    console.log(this)
+    super();
+    console.log(this);
   }
-  static get observedAttributes() {return ['name']; }
+  static get observedAttributes() {
+    return ['name'];
+  }
 
   attributeChangedCallback(attr, oldValue, newValue) {
     if (attr == 'name') {
@@ -11,8 +13,8 @@ class Button extends HTMLElement {
       this.style.padding = '.5rem';
       this.style.borderRadius = '.5rem';
     }
-    console.log(this)
+    console.log(this);
   }
 }
 
-customElements.define("material-btn", Button);
+customElements.define('material-btn', Button);
