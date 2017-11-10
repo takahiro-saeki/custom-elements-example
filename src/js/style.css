@@ -1,16 +1,7 @@
-
 :root {
-  //--custom-color: red;
+  --custom-color: red;
 }
 
 body {
   margin: 0;
-}
-
-material-btn {
-  width: 100%;
-}
-
-title-bar {
-  width: 100%;
 }

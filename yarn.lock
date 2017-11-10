@@ -5072,9 +5072,9 @@ wbuf@^1.1.0, wbuf@^1.7.2:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-webpack-dashboard@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/webpack-dashboard/-/webpack-dashboard-1.0.1.tgz#d1f329cbdab758b831cb23dc496ea72e6f9c1317"
+webpack-dashboard@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/webpack-dashboard/-/webpack-dashboard-1.0.2.tgz#78e39f6b179fa5fe1bf3bb7f36daf3bf919ca618"
   dependencies:
     babel-core "^6.24.0"
     babel-traverse "^6.23.1"
