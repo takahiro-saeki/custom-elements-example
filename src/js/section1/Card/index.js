@@ -1,127 +1,25 @@
+import dom from './dom';
+import currentDate from './currentDate';
+
 const template = document.createElement('template');
-template.innerHTML = `
-  <style>
-    button {
-    border: none;
-    cursor: pointer;
-    color: #00acc1;
-    padding: .5rem 1rem;
-    border-radius: 2px;
-    font-size: 1rem;
-    background: #FFF;
-    position: relative;
-    overflow: hidden;
-    outline: none;
-    transition: .5s;
-  }
-
-  button:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(0, 172, 193, .5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%);
-    transform-origin: 50% 50%;
-  }
-
-  button:hover {
-    background: #b2ebf2;
-    opacity: 0.7
-  }
-
-  @keyframes ripple {
-    0% {
-      transform: scale(0, 0);
-      opacity: 1;
-    }
-    20% {
-      transform: scale(25, 25);
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      transform: scale(40, 40);
-    }
-  }
-
-  button:focus:not(:active)::after {
-    animation: ripple 1s ease-out;
-  }
-  
-  .card-container {
-    width: 300px;
-    height: auto;
-    box-shadow: rgba(0,0,0,0.117647) 0px 1px 6px, rgba(0,0,0,0.117647) 0px 1px 4px;
-  }
-  
-  .card-image {
-    width: 100%;
-    height: auto;
-    vertical-align: bottom;
-  }
-  
-  .card-image-container {
-    position: relative;
-    margin-bottom: .5rem;
-  }
-  
-  .overlay {
-    padding: .5rem;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-    background: rgba(0, 0, 0, 0.54);
-  }
-  
-  .overlay-title {
-    font-size: 1rem;
-    color: #FFF;
-  }
-  
-  .area-container {
-    padding: .5rem;
-  }
-  
-  .date-container {
-    padding: .5rem;
-    color: #757575;
-    font-size: 14px;
-  }
-  
-  .description-container {
-    padding: .5rem;
-    font-size: 14px;
-  }
-  </style>
-  
-  <div class="card-container">
-    <div class="card-image-container">
-      <img src="//lorempixel.com/400/200/cats/" class="card-image" />
-      <div class="overlay">
-        <span class="overlay-title">cute animal.</span>
-      </div>
-    </div>
-    <div>
-      <div class="date-container">November 26</div>
-      <div class="description-container">cat is the cutest animal ever. Have you met cute animal more than cat? I don't think you have.</div>
-      <div class="area-container">
-        <button>Link</button>
-        <button>SHARE</button>
-      </div>
-    </div>
-  </div>
-`;
+template.innerHTML = dom;
 
 export default class Card extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.leftBtn = this.shadowRoot.querySelector('[left]');
+    this.rightBtn = this.shadowRoot.querySelector('[right]');
+    this.description = this.shadowRoot.querySelector('[description]');
+    this.date = this.shadowRoot.querySelector('[date]');
+    console.log(this)
+  }
+  
+  connectedCallback() {
+    this.leftBtn.innerText = this.getAttribute('left') || 'Link';
+    this.rightBtn.innerText = this.getAttribute('right') || 'Share';
+    this.description.innerText = this.getAttribute('description') || 'cute cat';
+    this.date.innerText = currentDate()
   }
 }

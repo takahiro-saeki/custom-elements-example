@@ -76,10 +76,4 @@ export default class Counter extends HTMLElement {
   set value(newValue) {
     this.setAttribute('value', newValue);
   }
-
-  disconnectedCallback() {
-    this.incBtn.removeEventListener('click', this.increment);
-    this.decBtn.removeEventListener('click', this.decrement);
-    this.resetBtn.removeEventListener('click', this.resetTransaction);
-  }
 }

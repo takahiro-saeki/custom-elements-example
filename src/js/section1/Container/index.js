@@ -11,6 +11,9 @@ export default class Container extends HTMLElement {
           max-width: 960px;
           padding: 1rem;
           margin: 0 auto;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-around;
         }
       </style>
       <div class="container">
