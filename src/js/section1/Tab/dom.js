@@ -42,6 +42,6 @@ const dom = `
     <slot id="tabsContent" name="content"></slot>
   </div>
 </div>
-`
+`;
 
 export default dom;

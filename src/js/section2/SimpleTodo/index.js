@@ -89,7 +89,7 @@ export default class SimpleTodo extends HTMLElement {
         isDisabled: false,
         text: 'mock text.'
       }
-    ]
+    ];
   }
 
   connectedCallback() {
@@ -97,32 +97,38 @@ export default class SimpleTodo extends HTMLElement {
       data.map((item, i) => {
         const { uuid, isDisabled, text } = item;
         const list = document.createElement('li');
-        list.classList.add('todo-item')
-        list.innerHTML = listDOM(isDisabled, text, uuid)
+        list.classList.add('todo-item');
+        list.innerHTML = listDOM(isDisabled, text, uuid);
         list.querySelector('[delete]').addEventListener('click', () => {
           list.parentNode.removeChild(list);
           const id = list.querySelector('[delete]').getAttribute('uuid');
-          const newState = this.state.filter(item => item.uuid !== id)
+          const newState = this.state.filter(item => item.uuid !== id);
           this.state = newState;
-          console.log(this.state)
-        })
+          console.log(this.state);
+        });
         this.shadowRoot.querySelector('ul').appendChild(list);
-      })
-    }
-    createDOM(this.state)
+      });
+    };
+    createDOM(this.state);
     const input = this.shadowRoot.querySelector('input');
     input.addEventListener('keypress', e => {
       if (e.keyCode === 13) {
         const li = document.createElement('li');
-        li.classList.add('todo-item')
+        li.classList.add('todo-item');
         li.innerHTML = listDOM(true, e.target.value);
         const listLength = this.shadowRoot.querySelectorAll('li').length;
-        li.setAttribute('id', listLength + 1)
-        li.querySelector('span').addEventListener('click', () => console.log('change'))
+        li.setAttribute('id', listLength + 1);
+        li
+          .querySelector('span')
+          .addEventListener('click', () => console.log('change'));
         this.shadowRoot.querySelector('ul').appendChild(li);
-        this.state.push({uuid: uuid.v4(), isDisabled: false, text: e.target.value})
+        this.state.push({
+          uuid: uuid.v4(),
+          isDisabled: false,
+          text: e.target.value
+        });
         input.value = null;
-        console.log(this.state)
+        console.log(this.state);
       }
     });
   }
