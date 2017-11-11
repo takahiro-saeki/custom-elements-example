@@ -1,135 +1,153 @@
 import uuid from 'uuid';
+import dom from './dom';
 
 const template = document.createElement('template');
-template.innerHTML = `
-  <style>
-    header {
-      color: #b2ebf2;
-      font-size: 1.5rem;
-      text-align: center;
-    }
+template.innerHTML = dom;
 
-    ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .todo-item {
-      display: flex;
-    }
-
-    .todo-item div {
-      width: 100%;
-    }
-
-    .todo-container {
-      width: 100%;
-      max-width: 550px;
-      margin: 0 auto;
-    }
-
-    .material-icons {
-      font-family: 'Material Icons';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 24px;  /* Preferred icon size */
-      display: inline-block;
-      line-height: 1;
-      text-transform: none;
-      letter-spacing: normal;
-      word-wrap: normal;
-      white-space: nowrap;
-      direction: ltr;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      -moz-osx-font-smoothing: grayscale;
-      font-feature-settings: 'liga';
-    }
-  </style>
-
-  <div class="todo-container">
-    <header>TODO EXAMPLE</header>
-    <div>
-      <input type="text"/>
-      <ul></ul>
-      <div></div>
-    </div>
-  </div>
-`;
-
-const listDOM = (disabled = false, text, uuid) => `
-  <span>
+const listDOM = (disabled = false, text) => `
+  <span checkCompleted>
     <i class="material-icons">check_circle</i>
   </span>
   <div>${text}</div>
-  <span diabled="${disabled}" delete uuid="${uuid}">
+  <span diabled="${disabled}" delete>
     <i class="material-icons">close</i>
   </span>
 `;
 
+const defaultState = [
+  {
+    uuid: uuid.v4(),
+    isDisabled: false,
+    text: 'text content.',
+    isCompleted: false
+  },
+  {
+    uuid: uuid.v4(),
+    isDisabled: true,
+    text: 'dummy text.',
+    isCompleted: true
+  },
+  {
+    uuid: uuid.v4(),
+    isDisabled: false,
+    text: 'mock text.',
+    isCompleted: false
+  }
+];
+
 export default class SimpleTodo extends HTMLElement {
+  static get observedAttributes() {
+    return ['sort'];
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.state = [
-      {
-        uuid: uuid.v4(),
-        isDisabled: false,
-        text: 'text content.'
-      },
-      {
-        uuid: uuid.v4(),
-        isDisabled: true,
-        text: 'dummy text.'
-      },
-      {
-        uuid: uuid.v4(),
-        isDisabled: false,
-        text: 'mock text.'
+    this.state = defaultState;
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    const ul = this.shadowRoot.querySelector('ul');
+    ul.textContent = null;
+    if (newValue === 'active') {
+      const active = this.state.filter(item => item.isCompleted === true);
+      return this.createDOM(active);
+    }
+    if (newValue === 'completed') {
+      const active = this.state.filter(item => !item.isCompleted === true);
+      return this.createDOM(active);
+    }
+    return this.createDOM(this.state);
+  }
+
+  deleteTodo(el) {
+    const id = el.getAttribute('uuid');
+    const newState = this.state.filter(item => item.uuid !== id);
+    this.state = newState;
+    el.parentNode.removeChild(el);
+  }
+
+  completeTodo(el) {
+    const id = el.getAttribute('uuid');
+    const hasAttr = el.hasAttribute('isCompleted');
+    const newState = this.state.map(item => {
+      if (item.uuid === id) {
+        const merge = Object.assign(
+          {},
+          item,
+          { isCompleted: !item.isCompleted },
+          { isDisabled: !item.isDisabled }
+        );
+        return merge;
       }
-    ];
+      return item;
+    });
+    this.state = newState;
+    if (hasAttr) {
+      el.removeAttribute('isCompleted');
+    } else {
+      el.setAttribute('isCompleted', '');
+    }
+  }
+
+  addTodo() {
+    const listUuid = uuid.v4();
+    const li = document.createElement('li');
+    li.classList.add('todo-item');
+    li.innerHTML = listDOM(true, event.target.value);
+    li
+      .querySelector('[delete]')
+      .addEventListener('click', () => this.deleteTodo(li));
+    li
+      .querySelector('[checkCompleted]')
+      .addEventListener('click', () => this.completeTodo(li));
+    li.setAttribute('uuid', listUuid);
+    this.shadowRoot.querySelector('ul').appendChild(li);
+    this.state.push({
+      uuid: listUuid,
+      isDisabled: false,
+      text: event.target.value,
+      isCompleted: false
+    });
+  }
+
+  createDOM(data = []) {
+    data.map(item => {
+      const { uuid, isDisabled, text, isCompleted } = item;
+      const list = document.createElement('li');
+      list.classList.add('todo-item');
+      list.innerHTML = listDOM(isDisabled, text);
+      list
+        .querySelector('[delete]')
+        .addEventListener('click', () => this.deleteTodo(list));
+      list
+        .querySelector('[checkCompleted]')
+        .addEventListener('click', () => this.completeTodo(list));
+      list.setAttribute('uuid', uuid);
+      if (isCompleted) {
+        list.setAttribute('isCompleted', '');
+      }
+      this.shadowRoot.querySelector('ul').appendChild(list);
+    });
+  }
+
+  sortTodo(event) {
+    const sortType = ['all', 'active', 'completed'];
+    const selectType = sortType.filter(item => event.target.hasAttribute(item));
+    this.setAttribute('sort', selectType[0]);
   }
 
   connectedCallback() {
-    const createDOM = data => {
-      data.map((item, i) => {
-        const { uuid, isDisabled, text } = item;
-        const list = document.createElement('li');
-        list.classList.add('todo-item');
-        list.innerHTML = listDOM(isDisabled, text, uuid);
-        list.querySelector('[delete]').addEventListener('click', () => {
-          list.parentNode.removeChild(list);
-          const id = list.querySelector('[delete]').getAttribute('uuid');
-          const newState = this.state.filter(item => item.uuid !== id);
-          this.state = newState;
-          console.log(this.state);
-        });
-        this.shadowRoot.querySelector('ul').appendChild(list);
-      });
-    };
-    createDOM(this.state);
+    this.createDOM(this.state);
+    const sortContainer = this.shadowRoot.querySelector('.sort-container');
     const input = this.shadowRoot.querySelector('input');
     input.addEventListener('keypress', e => {
-      if (e.keyCode === 13) {
-        const li = document.createElement('li');
-        li.classList.add('todo-item');
-        li.innerHTML = listDOM(true, e.target.value);
-        const listLength = this.shadowRoot.querySelectorAll('li').length;
-        li.setAttribute('id', listLength + 1);
-        li
-          .querySelector('span')
-          .addEventListener('click', () => console.log('change'));
-        this.shadowRoot.querySelector('ul').appendChild(li);
-        this.state.push({
-          uuid: uuid.v4(),
-          isDisabled: false,
-          text: e.target.value
-        });
+      if (event.keyCode === 13) {
+        this.addTodo(e);
         input.value = null;
-        console.log(this.state);
       }
     });
+    sortContainer.addEventListener('click', e => this.sortTodo(e));
   }
 }
