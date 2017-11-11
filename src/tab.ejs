@@ -13,9 +13,15 @@
         <button slot="title">Tab 1</button>
         <button slot="title" selected>Tab 2</button>
         <button slot="title">Tab 3</button>
-        <section slot="content">content panel 1</section>
-        <section slot="content">content panel 2</section>
-        <section slot="content">content panel 3</section>
+        <section slot="content">コンテンツ1の内容が表示されます。</section>
+        <section slot="content">
+          <div>コンテンツ2の内容が表示されます。</div>
+          <div>もちろんDOMをネストさせても問題ないです。</div>
+        </section>
+        <section slot="content">
+          <div>コンテンツ3の内容が表示されます。</div>
+          <div>現在はタブ3つ分表示させていますが、ここの数は任意に増やせます。</div>
+        </section>
       </custom-tab>
     </custom-container>
   </body>

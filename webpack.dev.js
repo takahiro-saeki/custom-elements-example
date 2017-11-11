@@ -17,7 +17,7 @@ module.exports = Merge(common, {
     historyApiFallback: true,
     open: true,
     openPage: '',
-    port: 8080,
+    port: 7092,
     inline: true,
     hot: true
   },
