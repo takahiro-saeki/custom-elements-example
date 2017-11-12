@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -18,20 +18,20 @@ module.exports = {
     extensions: ['.js', '.jsx', '.css']
   },
   module: {
-  rules: [
-    {
-      test: /(\.jsx|\.js)$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
-    },
-    {
-      test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        fallback: "style-loader",
-        use: "css-loader"
-      })
-    }
-  ]
+    rules: [
+      {
+        test: /(\.jsx|\.js)$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
+      }
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -58,7 +58,7 @@ module.exports = {
       template: path.join(__dirname, './src/simpleTodo.ejs'),
       filename: 'simpleTodo.html'
     }),
-    new ExtractTextPlugin("styles.css"),
+    new ExtractTextPlugin('styles.css'),
     new webpack.HotModuleReplacementPlugin()
   ]
 };

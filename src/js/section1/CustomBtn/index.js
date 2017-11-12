@@ -10,13 +10,6 @@ export default class CustomBtn extends HTMLElement {
     this.attachShadow({
       mode: 'open'
     });
-    const color = this.getAttribute('color');
-    const width = this.getAttribute('width');
-    const height = this.getAttribute('height');
-    this.shadowRoot.innerHTML = btnTemplate({ color, width, height });
-    this.addEventListener('click', () => {
-      this.setAttribute('color', 'red');
-    });
   }
 
   attributeChangedCallback(attr, oldValue) {
@@ -27,5 +20,15 @@ export default class CustomBtn extends HTMLElement {
       this.shadowRoot.innerHTML = btnTemplate({ color, width, height });
       this.textContent = 'changed!';
     }
+  }
+
+  connectedCallback() {
+    const color = this.getAttribute('color');
+    const width = this.getAttribute('width');
+    const height = this.getAttribute('height');
+    this.shadowRoot.innerHTML = btnTemplate({ color, width, height });
+    this.addEventListener('click', () => {
+      this.setAttribute('color', 'red');
+    });
   }
 }

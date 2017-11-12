@@ -1,11 +1,11 @@
 # introduction: web componentsについて
 ここ数年でjavascript applicationを開発したことがある人なら一度はgruntやgulp、webpackといったweb applicationを使用した開発を行ったことがあると思います。また同時に何かしらのjavascriptフレームワーク(angular, React.js, Vue.js等の)を使用した経験もあると思います。
-きっと誰も初めは「どうしてjavascript界隈はこんなに複雑になってしまったのだろう」と考えたことがあるでしょう。
+きっと誰もが初めは「どうしてjavascript界隈はこんなに複雑になってしまったのだろう」と考えたことがあるでしょう。
 環境や状況は違えど、数年前と比較するとfront-endの実装領域は拡張され、jQueryを使ったちょっとした動きのある実装をすれば良いだけで済まないケースが多いと思います。
 
 上記に上げたツールはどれも素晴らしいツールだと思います。著者は普段React.jsを使用したwebページやweb application開発を行っていますが、テストケースを書く時や型定義、またproduction, development環境毎の設定等、細かい部分まで設定出来るのは一重にReact.jsのコミニュティのエコシステムが整っているからだと実感します。
 
-ただ、現在ちゃんとした環境を構築するにはdevelopment用のツール(例えばwebpackやjest, flow-type等)の使い方、即ちAPIを使えるようにしなければなりません。またもちろん使用するフレームワークのAPIも使えるようにならないと行けません。
+ただ、現在ちゃんとした環境を構築するにはdevelopment用のツール(例えばwebpackやjest, flow-type等)の使い方、即ちAPIを使えるようにしなければなりません。また、もちろん使用するフレームワークのAPIも使えるようにならないと行けません。
 
 個人的な意見ですが、昨今のjavascriptの勢いは新規参入者の敷居を上げていたり、技術的格差を作っているように思えます。
 
@@ -44,10 +44,137 @@ HTMLを他のHTMLへ読み込ませれるようにする仕様です。
 
 上記のうち、今回はCustom Elementsを中心に説明して行きたいと思います。
 
+## Custom Elementsのブラウザの対応状況
+Custom Elementsのブラウザの対応状況は下記のようになります。
+` ここに画像 `
+EDGEとFIREFOX以外は基本的に問題無く使用出来、且つEDGEやFIREFOXでもpolyfillを使用することにより使用することが出来ます。
+現状モダンブラウザーでpolyfillを使用することにより問題無く動作することが出来ます。
+
+またpolyfillは `webcomponentsjs` を使用します。
+https://github.com/webcomponents/webcomponentsjs
+
 ## Custom Elementsの使い方
 まずはCustom Elementsを使用してみましょう。
 また今回のExample Codeは下記GitHubにあります。
 https://github.com/takahiro-saeki/custom-elements-example
 
+## Custom Elementsのライフサイクル
+Custom Elementsにはライフサイクルメソッドが存在します。
+主なメソッドは、
+- constructor
+要素が生成される時や、アップグレードがされる時に呼びだされるメソッド。
+shodowDOMの設定やaddEventListenerでのeventの設定などをする
+
+- connectedCallback
+要素がDOMにレンダリングされる度に呼び出される。
+セットアップの処理等をここで記述する。
+またaddEventListenerするが、何かしらの処理でそのDOM要素を破棄しなければならない場合に、ここでaddEventListenerを付与する処理を記述する。
+
+- disconnectedCallback
+要素がDOMから削除される度に読み込まれる。addEventListenerの破棄等、データのクリーンアップ処理を記述する。
+
+- attributeChangedCallback(attrName, oldVal, newVal)
+observedAttributesで購読されているattributeに変更が加わった際に呼び出されるメソッド。このメソッドには3つの引数があり、第1引数が何のattributeが変更されたかのattributeの名前、第2引数が変更される前のattributeのパラメーター、第3引数が変更後のパラメーターになります。
+
+- adoptedCallback()
+カスタム要素が新しい document に移動されたときに使用する
+今後のサンプルの中でも上記のメソッドを使用しますので、その際に都度詳細に説明したいと思います。
+
 ### custom-btnを作ってみよう
-まず簡単なボタンコンポーネントを作ってみましょう。
+まずは簡単なボタンコンポーネントを作ってみましょう！
+`src/section1/CustomBtn/index.js`
+今回このようなボタンのコンポーネントを作ります。
+`ここにindex.htmlのスクショ画像`
+
+このボタンの仕様としては
+- width, height, colorの3つのattributeがある。
+- clickをするとボタンの色が変わり、ボタン要素内のテキストを `changed!` に変更する
+
+です。まずはコードを見て行きましょう。
+`src/section1/CustomBtn` には二つのJSファイルがあります。
+- btnTemplate.js
+- index.js
+
+btnTemplateに関してはボタンのUI用のタグの記述とstyleの記述がされています。index.jsはロジックの処理が記述されています。
+btnTemplate内に `<slot></slot>` という記述がありますが、これはhtml内にタグを読み込む際にタグとタグの中に入れた要素(あるいはテキスト)を反映させます。
+例: `<button>ここに要素かテキストが入る</button>`
+`<slot>ここに要素かテキストが入る</slot>`
+
+またbtnTemplateは関数なのでattributeそれぞれの値を引数で受け取っています。
+それではindex.jsの中身を見てみましょう。
+
+`index.js`
+index.jsの全体のコードを載せる。
+まず初めにcustom elementsを使用するには作成するclassに対して `HTMLElement` を継承する必要があります。
+この `HTMLElement` を継承し、後ほど説明する `define`メソッドで定義することによってhtmlのタグとして使用することが出来ます。
+
+次に `static get observedAttributes()` observedAttributesメソッド内に購読するattributeの設定をします。
+次にconstructor内にshadowDOMを使用する設定を記述します。下記の
+```
+this.attachShadow({
+  mode: 'open'
+});
+```
+
+this.attachShadow() を実行することによってshadowDOMを生成することが出来ます。
+実際には読み込んだcustom-tag 内に `#shadow-root(open)` が追加され、custom-tag内で記述したDOMやstyleが展開されます(今回の場合だと`btnTemplate内に記述しているDOMやstyle`)。
+ちなみにこのshadowRoot内のDOMにアクセスをする場合は下記のように
+`this.shadowRoot.querySelector('.something')` 指定することによってDOMやstyleを参照出来ます。
+
+またattachShadow内の madeに `open` が記述されていますが、openにすることによってthis.attachShadowにアクセス出来、`closed` にすると`null` が戻り値として返って来ます。
+
+connectedCallbackにはDOMの生成addEventListenerでeventの付与をしています。クリックイベントが発生した場合、 `color` のattributeの値を `red` に書き換えています。またこのクリックイベントを発火し、attributeの値が変更されることによって `attributeChangedCallback` が呼び出され、ボタンのアップデートを行います。
+
+## CustomBtnをHTML内で使えるようにする
+それではCustomBtnをHTML内で使えるようにしてみましょう！
+初めに`js/index.js` に 作成したコンポーネント (`CustomBtn`) を読み込みその後に
+`customElements.define()` メソッドでコンポーネントを定義します。
+
+`customElements.define('custom-btn', CustomBtn);`
+これにより、HTML内で `custom-btn` タグを記述することによって使用することが出来ます。
+`src/index.ejs` を見てみましょう
+`src/index.ejsの中身`
+
+これにより、custom-elements を生成することが出来ます。
+
+## Custom Elementsを継承する
+また、作成したCustom Elementsを継承することが出来ます。
+`src/js/ExtensibleBtn` を見てみましょう。
+`extends` に `HTMLElement` ではなく、作成したCustom Elementsを継承することによって元々のコンポーネントを拡張した形でコンポーネントを作成することが出来ます。
+
+また要素自体を拡張することも出来ます。その際は下記のような
+`class GreatButton extends HTMLButtonElement` のように各それぞれの要素を指定する必要があります。
+
+## カウンターコンポーネントを作ってみよう
+ここからはカウンターコンポーネントのサンプルを通して説明したいと思います。まずは `src/js/Counter/index.js` を見てみましょう。
+`Counterのスクショ`
+非常に簡単なサンプルですが、 +を押下すると数値が 1 プラスされ、逆に -を押下すると数値が-1されます。またreset btnを押下することによって数値を0にすることが出来ます。
+またこのコンポーネントはボタンの色のスタイルをCSSから変更することが出来ます。コードを見てみましょう。
+`css variable の部分`
+
+上記はCSS Variablesといい、CSSに変数を指定することが出来ます。これにより、このように別ファイルにて指定の変数に値を入れることによってCustom Elements 内のスタイルを変更することが出来ます。
+```
+:root {
+  --custom-color: red;
+}
+```
+
+コンポーネント側でこのようにスタイルで変更出来る箇所を明示的に表すことが出来、他は参照出来ないようすることによってコンポーネントをピュアな状態で保つことが出来ます。
+
+以上で第1章の解説を終了したいと思います。紙面の都合上限られたサンプルでの紹介でしたが、GitHubのサンプルには他にhもTabのコンポーネントやCardコンポーネントのexampleもあるので、是非参考にしてみてください。
+
+## 第2章 Todo Exampleを通しての解説
+第2章ではフレームワークの解説ではもはや定番となりつつあるToDo Exampleの解説を通してCustom Elementsを紹介して行きたいと思います。早速 `src/js/section2` を見てみましょう！
+
+`SimpleTodoのスクショ`
+これから `SimpleTodo` というコンポーネントの解説をしたいと思います。この `SimpleTodo`は4つのファイルで構成されています。
+- defaultState.js
+Todoリストのデータの初期値
+- dom.js
+DOM要素やstyle要素用の関数
+- listDOM.js
+Todoリストの子要素をレンダリングする為の関数
+- index.js
+初期設定が記述されているファイル
+
+まずは `index.js` を見てみましょう。
