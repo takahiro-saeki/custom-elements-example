@@ -1,43 +1,33 @@
 import uuid from 'uuid';
 import dom from './dom';
+import listDOM from './listDOM';
+import defaultState from './defaultState';
 
 const template = document.createElement('template');
 template.innerHTML = dom;
 
-const listDOM = (disabled = false, text) => `
-  <span checkCompleted>
-    <i class="material-icons">check_circle</i>
-  </span>
-  <div>${text}</div>
-  <span diabled="${disabled}" delete>
-    <i class="material-icons">close</i>
-  </span>
-`;
-
-const defaultState = [
-  {
-    uuid: uuid.v4(),
-    isDisabled: false,
-    text: 'text content.',
-    isCompleted: false
-  },
-  {
-    uuid: uuid.v4(),
-    isDisabled: true,
-    text: 'dummy text.',
-    isCompleted: true
-  },
-  {
-    uuid: uuid.v4(),
-    isDisabled: false,
-    text: 'mock text.',
-    isCompleted: false
-  }
-];
-
 export default class SimpleTodo extends HTMLElement {
   static get observedAttributes() {
-    return ['sort'];
+    return ['sort', 'update'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    this.countTodo();
+    this.isDisplay(this.state.length === 0);
+
+    if (name === 'sort') {
+      const ul = this.shadowRoot.querySelector('ul');
+      ul.textContent = null;
+      if (newValue === 'active') {
+        const active = this.state.filter(item => item.isCompleted === true);
+        return this.createDOM(active);
+      }
+      if (newValue === 'completed') {
+        const completed = this.state.filter(item => !item.isCompleted === true);
+        return this.createDOM(completed);
+      }
+      return this.createDOM(this.state);
+    }
   }
 
   constructor() {
@@ -47,18 +37,16 @@ export default class SimpleTodo extends HTMLElement {
     this.state = defaultState;
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    const ul = this.shadowRoot.querySelector('ul');
-    ul.textContent = null;
-    if (newValue === 'active') {
-      const active = this.state.filter(item => item.isCompleted === true);
-      return this.createDOM(active);
-    }
-    if (newValue === 'completed') {
-      const active = this.state.filter(item => !item.isCompleted === true);
-      return this.createDOM(active);
-    }
-    return this.createDOM(this.state);
+  countTodo() {
+    const count = this.state.filter(item => item.isCompleted !== true);
+    const countField = this.shadowRoot.querySelector('[count]');
+    countField.setAttribute('count', this.state.length - count.length);
+    countField.textContent = count.length;
+  }
+
+  isDisplay(flag) {
+    const footer = this.shadowRoot.querySelector('footer');
+    footer.style.display = flag ? 'none' : 'flex';
   }
 
   deleteTodo(el) {
@@ -66,6 +54,7 @@ export default class SimpleTodo extends HTMLElement {
     const newState = this.state.filter(item => item.uuid !== id);
     this.state = newState;
     el.parentNode.removeChild(el);
+    this.setAttribute('update', '');
   }
 
   completeTodo(el) {
@@ -89,6 +78,7 @@ export default class SimpleTodo extends HTMLElement {
     } else {
       el.setAttribute('isCompleted', '');
     }
+    this.setAttribute('update', '');
   }
 
   addTodo() {
@@ -96,12 +86,10 @@ export default class SimpleTodo extends HTMLElement {
     const li = document.createElement('li');
     li.classList.add('todo-item');
     li.innerHTML = listDOM(true, event.target.value);
-    li
-      .querySelector('[delete]')
-      .addEventListener('click', () => this.deleteTodo(li));
-    li
-      .querySelector('[checkCompleted]')
-      .addEventListener('click', () => this.completeTodo(li));
+    const liDelete = li.querySelector('[delete]');
+    const listComplete = li.querySelector('[checkCompleted]');
+    liDelete.addEventListener('click', () => this.deleteTodo(li));
+    listComplete.addEventListener('click', () => this.completeTodo(li));
     li.setAttribute('uuid', listUuid);
     this.shadowRoot.querySelector('ul').appendChild(li);
     this.state.push({
@@ -110,6 +98,7 @@ export default class SimpleTodo extends HTMLElement {
       text: event.target.value,
       isCompleted: false
     });
+    this.setAttribute('update', '');
   }
 
   createDOM(data = []) {
@@ -118,17 +107,16 @@ export default class SimpleTodo extends HTMLElement {
       const list = document.createElement('li');
       list.classList.add('todo-item');
       list.innerHTML = listDOM(isDisabled, text);
-      list
-        .querySelector('[delete]')
-        .addEventListener('click', () => this.deleteTodo(list));
-      list
-        .querySelector('[checkCompleted]')
-        .addEventListener('click', () => this.completeTodo(list));
+      const listDelete = list.querySelector('[delete]');
+      const listComplete = list.querySelector('[checkCompleted]');
+      listDelete.addEventListener('click', () => this.deleteTodo(list));
+      listComplete.addEventListener('click', () => this.completeTodo(list));
       list.setAttribute('uuid', uuid);
       if (isCompleted) {
         list.setAttribute('isCompleted', '');
       }
       this.shadowRoot.querySelector('ul').appendChild(list);
+      this.setAttribute('update', '');
     });
   }
 
@@ -144,6 +132,9 @@ export default class SimpleTodo extends HTMLElement {
     const input = this.shadowRoot.querySelector('input');
     input.addEventListener('keypress', e => {
       if (event.keyCode === 13) {
+        if (!event.target.value) {
+          return false;
+        }
         this.addTodo(e);
         input.value = null;
       }
