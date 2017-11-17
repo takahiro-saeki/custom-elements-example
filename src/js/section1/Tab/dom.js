@@ -28,6 +28,11 @@ const dom = `
     border: none;
     outline: none;
     text-align: center;
+    margin: 0 .5rem;
+  }
+
+  .contents-field ::slotted(section) {
+    margin: 1rem auto;
   }
 
   .contents-field ::slotted([disabled-flag="true"]) {

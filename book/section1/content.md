@@ -15,8 +15,6 @@
 例えばフロントの知識が浅かったとしても、あまりモダンな環境に興味がなかったとしてもまずは誰かが作ったcustom elementsを使用して、次に自分でcustom elementsを作る。そうした良い学習サイクルが作り出せるのではないでしょうか？
 残念ながらまだcustom elementsをプロダクション環境で使用するには時期尚早ではあると思いますが、今後のブラウザ側の実装によってどんどんweb componentsはサポートされて行く(と信じています)思います。
 
-今回も基本的な解説とサンプルコードを交えた2章立ての内容となっています。さぁ、web componentsの世界へ飛び込んでみましょう！
-
 # 第1章 web componentsとは
 ## webcomponentsの構成内容
 皆さんはweb componentsをご存知でしょうか？web componentsとは
@@ -145,6 +143,31 @@ connectedCallbackにはDOMの生成addEventListenerでeventの付与をしてい
 また要素自体を拡張することも出来ます。その際は下記のような
 `class GreatButton extends HTMLButtonElement` のように各それぞれの要素を指定する必要があります。
 
+## Tabコンポーネントを作ってみよう
+Tabコンポーネントには主に二つのファイルで構成されています。
+- dom.js
+DOMとstyle要素が記述されています。
+- index.js
+主な処理が記述されています。
+
+まず初めにtemplateタグを生成し、templateタグ内にdom.js内のDOMをレンダリングしています。
+ちなみにtemplateタグは初期ロードでは読み込みされず、javascript側でレンダリングすることによって初めてブラウザにレンダリングされます。
+custom-elementsをレンダリングする際に非常に使い勝手が良いです。
+
+またdom.js内に以下のような
+`slotの部分`
+
+記述がされていますが、tab.ejs内の以下の部分のように
+`tab.ejs`の部分
+
+custom-elementsを読み込むことでそれぞれのslot内にDOMを読み込むことが出来ます。
+
+最終的には以下のようなタブが出来上がります。
+`Tabの画像`
+これによりタブとしての機能を保持しつつ、ユーザーはHTMLのみを記述するだけで使えるタブが出来上がります。
+昨今は一つのdivタグの中にjavascript側からDOMの描画をまとめてするケースが多いと思いますが、このようにcustom-elementsである程度レンダリングを制御し、実際に使用する際はHTMLを記述しコントロール出来るのはフロントエンドエンジニア以外の人達にも受けれ易いと思います。
+以上でTabコンポーネントの解説を終わります。
+
 ## カウンターコンポーネントを作ってみよう
 ここからはカウンターコンポーネントのサンプルを通して説明したいと思います。まずは `src/js/Counter/index.js` を見てみましょう。
 `Counterのスクショ`
@@ -167,7 +190,7 @@ connectedCallbackにはDOMの生成addEventListenerでeventの付与をしてい
 第2章ではフレームワークの解説ではもはや定番となりつつあるToDo Exampleの解説を通してCustom Elementsを紹介して行きたいと思います。早速 `src/js/section2` を見てみましょう！
 
 `SimpleTodoのスクショ`
-これから `SimpleTodo` というコンポーネントの解説をしたいと思います。この `SimpleTodo`は4つのファイルで構成されています。
+これからSimpleTodoというコンポーネントの解説をしたいと思います。このSimpleTodoは4つのファイルで構成されています。
 - defaultState.js
 Todoリストのデータの初期値
 - dom.js
@@ -177,4 +200,81 @@ Todoリストの子要素をレンダリングする為の関数
 - index.js
 初期設定が記述されているファイル
 
-まずは `index.js` を見てみましょう。
+index.js内の各メソッドは以下の役割を担っています。
+- observedAttributes
+チェック済みか、未チェックかを購読する。また新しくTODOを追加した時にobservedAttributesを呼び出すupdateも購読している。
+
+- attributeChangedCallback
+全体のTODOの数をTODOが更新される度にレンダリングする。またTODOの数が0だった場合、フッターを非表示にする。
+またソートボタンを押下した際の処理が記述されている。
+
+- constructor
+shadowRootの生成と初期TODOのデータを初期化しています。
+
+- countTodo
+TODOの数をカウントする処理が記述されています。
+
+- isDisplay
+TODOの数が0だった場合、フッターを非表示にする処理が記述されています。
+
+- deleteTodo
+TODOを削除した際の処理が記述されています。
+
+- completeTodo
+コンプリートボタンを押下した際の処理が記述されています。
+
+- addTodo
+TODOを追加した時の処理が記述されています。
+
+- createDOM
+初期ロードやソートボタンを押下した際にTODOのリストをレンダリングする処理が記述されています。
+
+- sortTodo
+ソートボタンを押下した際に発火する処理が記述されています。
+
+- connectedCallback
+初期描画時の処理が記述されています。
+
+基本的な構成としては役割毎になるべく細かくメソッドに分割し、必要な処理の際にメソッドを呼び出すようになっています。
+また下記の
+`this.state`
+各TODOのデータを保持しています。これにより例えば初期読み込み時にRequestをしてデータを取得し、データ整形をした後にthis.state内に値を代入すればRequestで得たデータを画面に描画することが出来ます。
+
+またポイントとしては
+this.setAttribute('data', 'something')
+のようにそのコンポーネント自身のattributeを変更する際にattributeChangedCallbackでattributeを設定して置くとsetAttributeした後にattributeChangedCallback内の処理は実行されますが、そのコンポーネントの子要素のattributeを変えた場合はattributeChangedCallbackが実行されません。その為、今回はコンポーネントの親階層にupdateというattributeを付与し、子要素のattributeがアップデートされる度にattributeChangedCallbackするように実装しました。
+
+実装していて感じたのはもっと子要素の役割を薄め、attributeChangedCallback内の処理を厚くする方が機能の拡張の際に良いかもしれません。
+
+また`listDOM`内の
+`listDOM`のコードを挿入する
+ES2015のTemplateStringsで関数をDOMのテンプレートとして使用しています。個人的にはこういう風にコンポーネント単位で細かく管理するのが凄く好きです(React.jsのように)。
+
+SimpleTodoになります。
+
+Polymerについて
+PolymerとはGoogle社が開発したweb componentsの技術要素を取り入れたUIフレームワークになります。書籍の中でも説明した通り、まだ全てのモダンブラウザでpolyfill無しでweb componentsを使用することは出来ませんが、polymerはそのpolyfillの役目を担っています。
+polymerは簡単にshadowDOMを使えたり、polymerで作られているコンポーネントやMaterial Designのコンポーネントを使用出来ます。
+
+また今までHTMLImportsを使用していましたが、polymer 3.0からES Modulesに変わります。ES Moduleは多くのフロントエンドに馴染みがあるのと思いますし、個人的にpolymerの今後に期待しています。
+またpolymer 3.0はpreviewですが、実際にpolymer 3.0がリリースされた際にはブログ等でガンガン解説して行きたいと思います。
+
+第1章 web componentsとは
+webcomponentsの構成内容
+Custom Elementsのブラウザの対応状況
+
+Custom Elementsの使い方
+Custom Elementsのライフサイクル
+
+custom-btnを作ってみよう
+
+CustomBtnをHTML内で使えるようにする
+
+Custom Elementsを継承する
+Tabコンポーネントを作ってみよう
+
+カウンターコンポーネントを作ってみよう
+
+第2章 とある電子の単純管理(シンプルTODO)
+
+コードの説明
